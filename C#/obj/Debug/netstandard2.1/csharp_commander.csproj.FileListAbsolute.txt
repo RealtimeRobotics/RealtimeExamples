@@ -1,0 +1,8 @@
+/home/ty/rtr/RealtimeExamples/C#/bin/Debug/netstandard2.1/csharp_commander.deps.json
+/home/ty/rtr/RealtimeExamples/C#/bin/Debug/netstandard2.1/csharp_commander.dll
+/home/ty/rtr/RealtimeExamples/C#/bin/Debug/netstandard2.1/csharp_commander.pdb
+/home/ty/rtr/RealtimeExamples/C#/obj/Debug/netstandard2.1/csharp_commander.csprojAssemblyReference.cache
+/home/ty/rtr/RealtimeExamples/C#/obj/Debug/netstandard2.1/csharp_commander.AssemblyInfoInputs.cache
+/home/ty/rtr/RealtimeExamples/C#/obj/Debug/netstandard2.1/csharp_commander.AssemblyInfo.cs
+/home/ty/rtr/RealtimeExamples/C#/obj/Debug/netstandard2.1/csharp_commander.dll
+/home/ty/rtr/RealtimeExamples/C#/obj/Debug/netstandard2.1/csharp_commander.pdb
