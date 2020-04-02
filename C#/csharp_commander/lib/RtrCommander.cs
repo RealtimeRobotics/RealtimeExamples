@@ -17,6 +17,10 @@ namespace csharp_commander.lib
 
         public RtrCommander(IPAddress address, int port) : this(new IPEndPoint(address, port)) { }
 
+        /// <summary>
+        /// Creates 
+        /// </summary>
+        /// <param name="endPoint"></param>
         public RtrCommander(IPEndPoint endPoint)
         {
             client = new AsyncTcpClient(endPoint);
