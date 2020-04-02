@@ -1,10 +1,10 @@
-namespace csharp_commander.Commands
+namespace csharp_commander.lib.Commands
 {
-    public class ReleaseControl : ICommand
+    public class AcquireControl : ICommand
     {
-        public string CommandString => CommandStrings.ReleaseControl;
+        public string CommandString => CommandStrings.AcquireControl;
 
-        public ReleaseControl(string project, string workState)
+        public AcquireControl(string project, string workState)
         {
             this.Project = project;
             this.WorkState = workState;

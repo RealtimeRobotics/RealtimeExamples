@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace csharp_commander.Responses
+namespace csharp_commander.lib.Responses
 {
     public class Response
     {
@@ -23,6 +23,15 @@ namespace csharp_commander.Responses
             }
 
             Data.AddRange(data[2..]);
+        }
+
+        public override string ToString()
+        {
+            if (Data.Count == 0)
+            {
+                return $"{CommandString},{ResponseCode}";
+            }
+            return $"{CommandString},{ResponseCode},{String.Join(',', Data)}";
         }
     }
 }

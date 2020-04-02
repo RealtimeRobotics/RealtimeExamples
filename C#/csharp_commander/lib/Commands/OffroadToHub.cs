@@ -1,6 +1,6 @@
 using System;
 
-namespace csharp_commander.Commands
+namespace csharp_commander.lib.Commands
 {
     public class OffroadToHub : ICommand
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace csharp_commander.Commands
+namespace csharp_commander.lib.Commands
 {
     public interface ICommand
     {

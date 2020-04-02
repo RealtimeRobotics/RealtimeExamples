@@ -3,34 +3,28 @@ using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using csharp_commander.Commands;
-using csharp_commander.Responses;
+using csharp_commander.lib.Commands;
+using csharp_commander.lib.Responses;
 
-namespace csharp_commander
+namespace csharp_commander.lib
 {
     public class RtrCommander
     {
 
-        AsyncTcpClient server;
+        AsyncTcpClient client;
+        public event EventHandler<CommanderResponseEventArgs> OnResponseReceived;
 
-        public RtrCommander(IPAddress address, int port)
+
+        public RtrCommander(IPAddress address, int port) : this(new IPEndPoint(address, port)) { }
+
+        public RtrCommander(IPEndPoint endPoint)
         {
-            server = new AsyncTcpClient(address, port);
-        }
-
-        /// <summary>
-        /// Starts the TCP Server and connects the event handler to handle incoming messages.
-        /// </summary>
-        public async Task StartServer()
-        {
-            server.OnDataReceived += HandleTcpMessage;
-            server.OnConnected += HandleClientConnected;
-
+            client = new AsyncTcpClient(endPoint);
+            client.OnDataReceived += HandleTcpMessage;
+            client.OnConnected += HandleClientConnected;
             Console.WriteLine("Starting TCP Server.");
-            await server.StartAsync();
-            await server.ListenAsync();
-
-            Console.WriteLine("TCP Server running.");
+            client.Connect();
+            client.StartListening();
         }
 
         /// <summary>
@@ -38,9 +32,9 @@ namespace csharp_commander
         /// </summary>
         public void StopServer()
         {
-            server.OnDataReceived -= HandleTcpMessage;
+            client.OnDataReceived -= HandleTcpMessage;
             Console.WriteLine("Stopping TCP Server.");
-            server.Stop();
+            client.Stop();
             Console.WriteLine("TCP server stopped.");
         }
 
@@ -49,8 +43,9 @@ namespace csharp_commander
         /// </summary>
         /// <param name="command">The Command to send. </param>
         /// <returns></returns>
-        public async void SendCommand(ICommand command)
+        public async Task SendCommand(ICommand command)
         {
+            Console.WriteLine($"Sending: {command.ToString()}");
             await this.SendAsync(command.ToString());
         }
 
@@ -72,11 +67,8 @@ namespace csharp_commander
         private void HandleTcpMessage(object tcpSender, TcpDataEventArgs evt)
         {
             string recv = evt.Data;
-            Console.WriteLine("Received: " + recv);
-
             Response resp = new Response(recv);
-
-            // Do something with resp here.
+            OnResponseReceived?.Invoke(this, new CommanderResponseEventArgs(resp));
         }
 
         /// <summary>
@@ -86,7 +78,7 @@ namespace csharp_commander
         /// <returns></returns>
         private async Task SendAsync(string message)
         {
-            await server.SendAsync(message);
+            await client.SendAsync(message);
         }
     }
 }

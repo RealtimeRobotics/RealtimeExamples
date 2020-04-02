@@ -1,9 +1,10 @@
-namespace csharp_commander.Commands
+namespace csharp_commander.lib.Commands
 {
-    public class CancelMove : ICommand
+    public class ChangeWorkState : ICommand
     {
-        public string CommandString => CommandStrings.CancelMove;
-        public CancelMove(string project, string workState)
+        public string CommandString => CommandStrings.ChangeWorkState;
+
+        public ChangeWorkState(string project, string workState)
         {
             this.Project = project;
             this.WorkState = workState;

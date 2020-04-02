@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace csharp_commander.Responses
+namespace csharp_commander.lib.Responses
 {
     public enum ResponseCode
     {

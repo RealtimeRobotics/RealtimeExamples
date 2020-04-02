@@ -1,4 +1,4 @@
-namespace csharp_commander.Commands
+namespace csharp_commander.lib.Commands
 {
     public static class CommandStrings
     {
@@ -9,6 +9,7 @@ namespace csharp_commander.Commands
         public static string ChangeWorkState = "ChangeWorkState";
         public static string ClearFaults = "ClearFaults";
         public static string EndOperationMode = "EndOperationMode";
+        public static string GetMode = "GetMode";
         public static string InitGroup = "InitGroup";
         public static string MoveToHub = "MoveToHub";
         public static string MoveToPose = "MoveToPose";
