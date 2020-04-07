@@ -21,7 +21,7 @@
     Sending: GetMode
     Response: GetMode,SUCCESS,CONFIG
     Sending: GetMode
-    Response: GetMode,SUCCESS,CONFIG```
+    Response: GetMode,SUCCESS,CONFIG
 
 ## Next Steps
 1. Use `Program.cs` as an example to accomplish your needs.
