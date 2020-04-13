@@ -4,7 +4,7 @@ Codesys Library project including function blocks to communicate with a Realtime
 
 ---
 
-## Requiremed Software
+## Required Software
 
 1. Install Codesys V3.5 SP14 x64 or newer on a Windows System 
 2. https://store.codesys.com/codesys.html

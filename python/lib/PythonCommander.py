@@ -4,11 +4,10 @@ import socket
 import select
 
 
-class PythonApplianceCommander:
+class PythonCommander:
     """
-    This class talks to the Appliance over Socket
-    It should implement all functions that our Appliance supports
-    It is an alternative to the CPP based Appliance Commander
+    This class talks to the Realtime Controller over Socket
+    It should implement all functions that our Realtime Controller supports
     Dec 11 2019 - Currently has parity with ICD version 1.4
     """
     DELIM = ","
@@ -84,7 +83,7 @@ class PythonApplianceCommander:
         """
         Constructor is called with an address (IP) and a port
         Parameters:
-            addr (string): IP Address of the Appliance
+            addr (string): IP Address of the Realtime Controller
             port (int): Port number to connect to
             socket_pool_size (uint): number of concurrent socket connections (concurrent commands)
         """
@@ -101,7 +100,6 @@ class PythonApplianceCommander:
         """Concatenates tokens in a delimited string"""
         tokens = [str(token) for token in tokens]
         cmd_str = cls.DELIM.join(tokens) + '\r\n'
-        print(cmd_str)
         return cmd_str
 
     @classmethod
@@ -151,11 +149,12 @@ class PythonApplianceCommander:
         """
         socket = self._GetSocket()  # get a socket from available list
 
-        cmd_str = PythonApplianceCommander._StringBuilder(
+        cmd_str = PythonCommander._StringBuilder(
             cmd_tokens)  # build the cmd str
-        socket.sendall(cmd_str)  # send our cmd string
-        data = socket.recv(
-            PythonApplianceCommander.MAX_BUFFER_SIZE)  # recv response
+        print(f'Sending: {cmd_str}')
+        socket.sendall(cmd_str.encode())  # send our cmd string
+        # recv response
+        data = socket.recv(PythonCommander.MAX_BUFFER_SIZE).decode("utf-8")
 
         # Parse the code and set seq to INVALID
         code = self._GetCode(data)
@@ -211,7 +210,7 @@ class PythonApplianceCommander:
             except Exception as e:
                 is_connected[ii] = False
                 print(
-                    'Got exception in PythonApplianceCommander Init [{}]'.format(e))
+                    'Got exception in PythonCommander Init [{}]'.format(e))
                 continue
 
         # remove any sockets which failed to connect
@@ -258,7 +257,7 @@ class PythonApplianceCommander:
         Sends the GetMode command which queries the Realtime Controller's state
         Returns:
             unsigned int: return code, 0 means success
-            str: string representation of the current appliance state
+            str: string representation of the current Realtime Controller state
         """
         tokens = [self.GET_MODE]
         return self._Call(tokens, False)
@@ -340,7 +339,7 @@ class PythonApplianceCommander:
         socket.settimeout(timeout)  # set the timeout
         try:
             data = socket.recv(
-                PythonApplianceCommander.MAX_BUFFER_SIZE)  # try to recv
+                PythonCommander.MAX_BUFFER_SIZE)  # try to recv
 
         except Exception as e:
             print("Timed out waiting for delayed response, got {}".format(e))
@@ -356,7 +355,7 @@ class PythonApplianceCommander:
         """
         Sets the planning parameters. Must call Setup(...) first.
         Parameters:
-            replan_attempts (int): Number of times Appliance will attempt to replan if blocked
+            replan_attempts (int): Number of times Realtime Controller will attempt to replan if blocked
             timeout (float): how long to attempt to find a plan
             project_name (string): name of the robot project this should affect
         Returns:
