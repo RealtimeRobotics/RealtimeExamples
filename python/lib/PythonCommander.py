@@ -341,6 +341,9 @@ class PythonCommander:
             data = socket.recv(
                 PythonCommander.MAX_BUFFER_SIZE)  # try to recv
 
+            # In python 3 strings need to be converted from bytes to unicode
+            data = data.decode('utf_8')
+
         except Exception as e:
             print("Timed out waiting for delayed response, got {}".format(e))
             timed_out = True

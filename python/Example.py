@@ -13,7 +13,7 @@ def main():
 
     for i in range(5):
         (code, data) = commander.GetMode()
-        print(f'Response Code: {code}, Data: {data}')
+        print('Response Code: {}, Data: {}'.format(code,data))
         time.sleep(1)
 
 
