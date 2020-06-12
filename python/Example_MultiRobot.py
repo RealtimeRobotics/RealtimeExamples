@@ -3,8 +3,7 @@
 from lib.PythonCommander import PythonCommander
 from lib.PythonCommanderHelper import PythonCommanderHelper
 import lib.CommonOperations as cmn_ops 
-import time
-import random
+import time, random, sys
 
 def main():
     # Setup the PythonCommander which is responsible for sending commands to the 
@@ -39,13 +38,19 @@ def main():
     print('Loaded projects: {}'.format(selected_projects_info['projects']))
     
     project_info = helper.get_project_info(group_info[selected_group])
+    code = cmn_ops.startup_sequence(cmdr,project_info,selected_group)
 
-    cmn_ops.startup_sequence(cmdr,project_info,selected_group)
+    print("The robots are initialized and operation mode succeeded.")
+    user_in = input('Can they begin moving? (y/n) ')
+    if not user_in == 'y':
+        sys.exit()
+
     res = cmn_ops.put_on_roadmap(cmdr,project_info,selected_group)
     print(res)
 
     speed = 1.0
     cycle = 0
+
     while True:
         results = []
         sequences = []
@@ -59,12 +64,13 @@ def main():
             sequences.append(hub_seq)
             results.append(hub_res)
             
+        print("Move sequence numbers: {}".format(sequences))
+        print("Move result codes: {}".format(results))
 
-        #TODO: launch these wait for moves in threads?
-        print(sequences)
-        print(results)
-        cmdr.WaitForMove(sequences[0])
-        cmdr.WaitForMove(sequences[1])
+        # Wait for all moves to finish
+        for move_idx in range(0,len(sequences)):
+            cmdr.WaitForMove(sequences[move_idx])
+        
         cycle += 1
         print("Completed %d cycle!"%(cycle))
         print("Socket pool size: %d"%(len(cmdr._sockets)))
