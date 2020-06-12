@@ -16,6 +16,7 @@ class PythonCommanderHelper(object):
     installed_proj = '/api/projects/'
     proj_details = '/api/projects/:project/'
     load_group = '/api/groups/load/:group'
+    unload_group = '/api/groups/unload/:group'
     config_mode = '/api/appliance/mode/config/'
     
     def __init__(self,ip_adr='127.0.0.1'):
@@ -47,7 +48,8 @@ class PythonCommanderHelper(object):
         for group in groups:
             group_name = group['GroupName']
             group_projects = group['projects']
-            group_info.update({group_name : {'projects':group_projects}})
+            loaded = group['loaded']
+            group_info.update({group_name : {'loaded':loaded,'projects':group_projects}})
         return group_info
 
     def get_installed_projects(self):
@@ -57,6 +59,13 @@ class PythonCommanderHelper(object):
 
     def put_load_group(self,group_name):
         extension,place_holer = self.load_group.split(':')
+        extension = extension + group_name
+        resp = self.send_put_request(extension)
+
+        return resp
+    
+    def put_unload_group(self,group_name):
+        extension,place_holer = self.unload_group.split(':')
         extension = extension + group_name
         resp = self.send_put_request(extension)
 
