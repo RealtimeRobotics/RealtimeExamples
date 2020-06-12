@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import socket
 import select
@@ -13,7 +13,7 @@ class PythonCommander:
     DELIM = ","
     CMD_INDEX = 0
     CODE_INDEX = 1
-    SEQ_INDEX = 3
+    SEQ_INDEX = 2
     BAD_CODE = 1003  # this is the code for communication error
     INVALID_SEQ = -1
 
@@ -155,6 +155,7 @@ class PythonCommander:
         socket.sendall(cmd_str.encode())  # send our cmd string
         # recv response
         data = socket.recv(PythonCommander.MAX_BUFFER_SIZE).decode("utf-8")
+        print(data)
 
         # Parse the code and set seq to INVALID
         code = self._GetCode(data)
@@ -343,6 +344,7 @@ class PythonCommander:
 
             # In python 3 strings need to be converted from bytes to unicode
             data = data.decode('utf_8')
+            print(data)
 
         except Exception as e:
             print("Timed out waiting for delayed response, got {}".format(e))

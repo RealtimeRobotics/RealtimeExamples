@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+import requests
+
+class ApiError(Exception):
+    """An API Error Exception"""
+
+    def __init__(self, status):
+        self.status = status
+
+    def __str__(self):
+        return "APIError: status={}".format(self.status)
+
+class PythonCommanderHelper(object):
+    groups = '/api/groups/'
+    installed_proj = '/api/projects/'
+    proj_details = '/api/projects/:project/'
+    load_group = '/api/groups/load/:group'
+    config_mode = '/api/appliance/mode/config/'
+    
+    def __init__(self,ip_adr='127.0.0.1'):
+        self.ip_adr = ip_adr
+
+    def send_get_request(self,extension):
+        url = 'http://%s%s'%(self.ip_adr,extension)
+        resp = requests.get(url)
+        print('\n[INFO] Sent Get request to %s'%(url))
+
+        if resp.status_code != 200:
+            # This means something went wrong.
+            raise ApiError('GET {} {}'.format(url,resp.status_code))
+        
+        return resp.json()
+
+    def send_put_request(self,extension):
+        url = 'http://%s%s'%(self.ip_adr,extension)
+        resp = requests.put(url)
+        print('\n[INFO] Sent Put request to %s'%(url))
+
+        if resp.status_code != 200:
+            # This means something went wrong.
+            raise ApiError('PUT {} {}'.format(url,resp.status_code))
+
+    def get_group_info(self):
+        groups = self.send_get_request(self.groups)
+        group_info = {}
+        for group in groups:
+            group_name = group['GroupName']
+            group_projects = group['projects']
+            group_info.update({group_name : {'projects':group_projects}})
+        return group_info
+
+    def get_installed_projects(self):
+        projs = self.send_get_request(self.installed_proj)
+        print(projs['projects'])
+        return projs
+
+    def put_load_group(self,group_name):
+        extension,place_holer = self.load_group.split(':')
+        extension = extension + group_name
+        resp = self.send_put_request(extension)
+
+        return resp
+
+    def get_project_info(self,group_info):
+        project_info = {}
+        for project in group_info['projects']:
+            extension,place_holer = self.proj_details.split(':')
+            extension = extension + project
+            resp = self.send_get_request(extension)
+            workstates = resp['roadmaps']
+            hubs = resp['hubs']
+            project_info.update({project:{'workstates':workstates,'hubs':hubs}})
+            
+        return project_info
+    
+    def put_config_mode(self):
+        resp = self.send_put_request(self.config_mode)
+        return resp
+
+    def get_hubs(self):
+        pass
+
