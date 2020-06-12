@@ -19,7 +19,7 @@ class PythonCommanderHelper(object):
     unload_group = '/api/groups/unload/:group'
     config_mode = '/api/appliance/mode/config/'
     
-    def __init__(self,ip_adr='127.0.0.1'):
+    def __init__(self,ip_adr):
         self.ip_adr = ip_adr
 
     def send_get_request(self,extension):

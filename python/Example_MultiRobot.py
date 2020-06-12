@@ -3,17 +3,17 @@
 from lib.PythonCommander import PythonCommander
 from lib.PythonCommanderHelper import PythonCommanderHelper
 import lib.CommonOperations as cmn_ops 
-import time, random, sys
+import time, random, sys, threading
 
 def main():
     # Setup the PythonCommander which is responsible for sending commands to the 
     # RTR Controller that control the robot/s
-    cmdr = PythonCommander("127.0.0.1", 9999)
+    cmdr = PythonCommander("10.164.2.104", 9999) #TODO: pass IP as argument.
     cmdr.Reconnect()
 
     # Setup the PytonCommanderHelper which is responsible for getting data from
     # the RTR Controller through its REST api
-    helper = PythonCommanderHelper("127.0.0.1")
+    helper = PythonCommanderHelper("10.164.2.104:3000") #TODO: pass IP as argument. :3000 is for running from source
     group_info = helper.get_group_info()
 
     # Put appliance in config mode so that we can load/unload
@@ -29,8 +29,11 @@ def main():
     
     # Prompt the user if they would like to unload that group
     # You must unload the current group, if you will be switching groups
-    if user_in == 'y': 
-        helper.put_unload_group(group_name)
+    try:
+        if user_in == 'y': 
+            helper.put_unload_group(group_name)
+    except:
+        pass
 
     # Print installed groups on the Controller
     print("\nAvailable Groups:")
@@ -65,11 +68,11 @@ def main():
 
     # Call offroad to hub for every project
     # The assumption here is that there is a hub named 'home'! We consider that a best practice
-    res = cmn_ops.put_on_roadmap(cmdr,project_info,selected_group,hub='home')
+    res = cmn_ops.put_on_roadmap(cmdr,project_info,selected_group,hub='h0')
     print('Offroad to hub retuned codes: {}'.format(res))
 
 
-    speed = 1.0 # Speed for the robots to move at [0,1] where 1 is 100% speed
+    speed = 0.1 # Speed for the robots to move at [0,1] where 1 is 100% speed
     cycle = 0 # Count the number of cycles the loop goes through
     while True:
         results = []
@@ -91,7 +94,7 @@ def main():
         # Wait for all moves to finish
         for move_idx in range(0,len(sequences)):
             cmdr.WaitForMove(sequences[move_idx])
-        
+                
         cycle += 1
         print("Completed %d cycles!"%(cycle))
 
