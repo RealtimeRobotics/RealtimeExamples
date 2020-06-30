@@ -185,6 +185,11 @@ class PythonCommander:
             # Case 2: 'Move' command - returns a code and sequence number
             # Case 3: 'State' command - returns a code and string
             data_list = data.split(',')
+
+            # Remove leading and ending space from strings
+            for count,entry in enumerate(data_list):
+                data_list[count] = entry.strip()
+
             assert(len(data_list) > 0)
             if has_delayed_response:
                 return (code, seq)

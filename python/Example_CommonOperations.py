@@ -11,10 +11,11 @@ from rtr_control_ros.srv import SetSimulatedErrorRequest
 import rospy
 
 def main():
+    ### If ip address is passed, use it
     if len(sys.argv) != 1:
         ip_addr = str(sys.argv[1])
         print("Setting ip address of Realtime Controller to: %s"%(ip_addr))
-    else:
+    else: # Default IP address
         ip_addr = "127.0.0.1"
 
     # Setup the PythonCommander which is responsible for sending commands to the 
@@ -25,9 +26,18 @@ def main():
     # Commander helper that communicates with the Co
     helper = PythonCommanderHelper(ip_addr)
 
-    # Enter Control Panel information here
-    group = 'python_examples'
-    project_info = {'python_library':{'workstates':['state_0'],'hubs':['home','forward']}}
+    ### Enter Control Panel information here
+    # group name
+    group = 'CommonOperationsExample'
+
+    # Nested dictionary that contains all projects information of the form:
+    #   project name: str
+    #       workstates: [str]
+    #       hubs: [str]
+    group_info = helper.get_group_info()
+
+    project_info = helper.get_project_info(group_info[group]['projects'])#['CommonOperationsExample'])
+    project_names = group_info[group]['projects'] #list(project_info.keys())
 
     ################################################
     # Running cycle of common operations
@@ -35,30 +45,31 @@ def main():
 
     # Call startup sequence which calls InitGroup for each project and then BeginOperationMode
     print('Startup sequence...')
-    time.sleep(0.75)
+    time.sleep(1.0)
 
     cmn_ops.startup_sequence(cmdr,project_info,group)
 
     # Put each robot on the roadmap
     print('\nPutting robots on roadmap...')
-    time.sleep(.75)
+    time.sleep(1.0)
 
     cmn_ops.put_on_roadmap(cmdr,project_info,group,hub='home')
 
-    # Simulate a fault using the ROS service
+    # Teleport the robot to a random hub and then simulate a fault using the ROS service
     print('\nSimulating a fault...')
-    time.sleep(.75)
+    time.sleep(1.0)
 
     helper.put_config_mode()
-    helper.put_teleport_robot(list(project_info.keys())[0],'forward')
+    hubs = project_info[project_names[0]]['hubs']
+    helper.put_teleport_robot(project_names[0],hubs[random.randint(0,len(hubs)-1)])
 
-    srv_handle = rospy.ServiceProxy("/python_library/set_simulated_error", SetSimulatedError)
+    srv_handle = rospy.ServiceProxy("/%s/set_simulated_error"%(project_names[0]), SetSimulatedError)
     request = SetSimulatedErrorRequest()
     request.simulated_error = True
     srv_handle(request)
 
     # Attempt to clear faults and put each robot back on the roadmap
-    user_in = input('\nFault detected. Would you like to clear and home the robots? (y/n):')
+    user_in = input('\nFault detected. Would you like to clear and home the robots? (y/n): ')
     if (user_in == 'y') or (user_in == 'Y'):
         print('\nAttempting fault recovery...')
         time.sleep(0.75)

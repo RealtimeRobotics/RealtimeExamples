@@ -4,10 +4,8 @@ import requests
 
 class ApiError(Exception):
     """An API Error Exception"""
-
     def __init__(self, status):
-        self.status = status
-
+        self.status = statu
     def __str__(self):
         return "APIError: status={}".format(self.status)
 
@@ -74,12 +72,12 @@ class PythonCommanderHelper(object):
 
         return resp
 
-    def get_project_info(self,group_info):
+    def get_project_info(self,projects):
         project_info = {}
-        for project in group_info['projects']:
+        for project in projects:
             # Format string for project info get request
             extension,place_holer = self.proj_details.split(':')
-            extension = extension + project
+            extension = extension + project + '/'
             resp = self.send_get_request(extension)
 
             workstates = resp['roadmaps']
