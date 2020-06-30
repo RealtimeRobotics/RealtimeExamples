@@ -8,12 +8,12 @@ import time, random, sys, threading
 def main():
     # Setup the PythonCommander which is responsible for sending commands to the 
     # RTR Controller that control the robot/s
-    cmdr = PythonCommander("10.164.2.104", 9999) #TODO: pass IP as argument.
+    cmdr = PythonCommander("127.0.0.1", 9999) #TODO: pass IP as argument.
     cmdr.Reconnect()
 
     # Setup the PytonCommanderHelper which is responsible for getting data from
     # the RTR Controller through its REST api
-    helper = PythonCommanderHelper("10.164.2.104:3000") #TODO: pass IP as argument. :3000 is for running from source
+    helper = PythonCommanderHelper("127.0.0.1") #TODO: pass IP as argument. :3000 is for running from source
     group_info = helper.get_group_info()
 
     # Put appliance in config mode so that we can load/unload

@@ -18,6 +18,7 @@ class PythonCommanderHelper(object):
     load_group = '/api/groups/load/:group'
     unload_group = '/api/groups/unload/:group'
     config_mode = '/api/appliance/mode/config/'
+    clear_faults = '/api/appliance/clear_faults/'
     
     def __init__(self,ip_adr):
         self.ip_adr = ip_adr
@@ -44,9 +45,10 @@ class PythonCommanderHelper(object):
 
     def get_group_info(self):
         groups = self.send_get_request(self.groups)
+        # print(groups)
         group_info = {}
         for group in groups:
-            group_name = group['GroupName']
+            group_name = group['name']
             group_projects = group['projects']
             loaded = group['loaded']
             group_info.update({group_name : {'loaded':loaded,'projects':group_projects}})
@@ -74,9 +76,11 @@ class PythonCommanderHelper(object):
     def get_project_info(self,group_info):
         project_info = {}
         for project in group_info['projects']:
+            # Format string for project info get request
             extension,place_holer = self.proj_details.split(':')
             extension = extension + project
             resp = self.send_get_request(extension)
+
             workstates = resp['roadmaps']
             hubs = resp['hubs']
             project_info.update({project:{'workstates':workstates,'hubs':hubs}})

@@ -3,7 +3,6 @@
 import socket
 import select
 
-
 class PythonCommander:
     """
     This class talks to the Realtime Controller over Socket

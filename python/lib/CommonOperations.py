@@ -18,12 +18,17 @@ def startup_sequence(cmdr,project_info,group):
     
     return cmdr.BeginOperation()
 
-def shutdown(cmdr,task_manager):
+def shutdown(cmdr,group,unload=True):
     '''
     This function cancels all current moves and puts the controller back in config mode
     Optionally: you can have the function wait until all moves are finished to cancel
     '''
-    pass
+    # End operation mode on controller. This will put the controller in config mode
+    cmdr.EndOperation()
+
+    # This will unload the group from the controller
+    if unload:
+        cmdr.TerminateGroup(group)
 
 def put_on_roadmap(cmdr,project_info,group,hub='home'):
     '''
@@ -31,10 +36,9 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
     The nearest hub is chosen
     '''
     code, data = cmdr.GetMode()
-    # print(data)
-    # if not data == "OPERATION":
-    #     print('Put controller in operation mode!')
-    #     return
+    if data != "OPERATION":
+        print('Put controller in operation mode!')
+        return
 
     move_res = []
     for project_name,info in project_info.items():
@@ -49,7 +53,10 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
 def attempt_fault_recovery(cmdr,project_info,group,hub='home'):
     '''
     This function clears faults for the provided project, and puts the robot back on the roadmap
-    The nearest hub is chosen
     '''
-    # plan to the closest hub/node
-    pass
+
+    # Clear faults on the RTR Controller
+    cmdr.ClearFaults()
+
+    # For each 
+    put_on_roadmap(cmdr,project_info,group,hub)
