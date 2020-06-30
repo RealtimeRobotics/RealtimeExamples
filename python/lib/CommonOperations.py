@@ -16,7 +16,9 @@ def startup_sequence(cmdr,project_info,group):
         workstate = info['workstates'][0]
         cmdr.InitGroup(workstate,group_name = group,project_name=project_name)
     
-    return cmdr.BeginOperation()
+    resp = cmdr.BeginOperation()
+
+    return resp
 
 def shutdown(cmdr,group,unload=True):
     '''
@@ -36,9 +38,9 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
     The nearest hub is chosen
     '''
     code, data = cmdr.GetMode()
-    if data != "OPERATION":
-        print('Put controller in operation mode!')
-        return
+    # if data != "OPERATION":
+    #     print('Put controller in operation mode!')
+    #     return
 
     move_res = []
     for project_name,info in project_info.items():
@@ -57,6 +59,9 @@ def attempt_fault_recovery(cmdr,project_info,group,hub='home'):
 
     # Clear faults on the RTR Controller
     cmdr.ClearFaults()
+
+    # Restart controller
+    startup_sequence(cmdr,project_info,group)
 
     # For each 
     put_on_roadmap(cmdr,project_info,group,hub)

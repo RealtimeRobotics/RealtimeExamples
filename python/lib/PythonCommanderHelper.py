@@ -19,6 +19,7 @@ class PythonCommanderHelper(object):
     unload_group = '/api/groups/unload/:group'
     config_mode = '/api/appliance/mode/config/'
     clear_faults = '/api/appliance/clear_faults/'
+    teleport_robot = '/api/projects/:project/hubs/:hub/'
     
     def __init__(self,ip_adr):
         self.ip_adr = ip_adr
@@ -89,6 +90,17 @@ class PythonCommanderHelper(object):
     
     def put_config_mode(self):
         resp = self.send_put_request(self.config_mode)
+        return resp
+    
+    def put_teleport_robot(self,project,hub):
+        split_string = self.teleport_robot.split(':')
+        prefix = split_string[0]
+        project = '%s/hubs/'%(project)
+        hub = '%s'%(hub)
+
+        teleport_string = prefix + project + hub
+        resp = self.send_put_request(teleport_string)
+
         return resp
 
     def get_hubs(self):
