@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from lib.PythonCommander import PythonCommander
+from PythonCommander import PythonCommander
 import sys
 import time
 
@@ -96,5 +96,5 @@ def attempt_fault_recovery(cmdr,project_info,group,hub='home'):
     # Restart controller
     startup_sequence(cmdr,project_info,group)
 
-    # For each 
+    # Put each robot on the roadmap
     put_on_roadmap(cmdr,project_info,group,hub)
