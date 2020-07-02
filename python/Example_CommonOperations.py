@@ -31,13 +31,11 @@ def main():
     group = 'CommonOperationsExample'
 
     # Nested dictionary that contains all projects information of the form:
-    #   project name: str
-    #       workstates: [str]
-    #       hubs: [str]
+    # {project name: {workstates: [str], hubs: [str]}
     group_info = helper.get_group_info()
 
-    project_info = helper.get_project_info(group_info[group]['projects'])#['CommonOperationsExample'])
-    project_names = group_info[group]['projects'] #list(project_info.keys())
+    project_info = helper.get_project_info(group_info[group]['projects'])
+    project_names = group_info[group]['projects']
 
     ################################################
     # Running cycle of common operations
@@ -68,7 +66,7 @@ def main():
     request.simulated_error = True
     srv_handle(request)
 
-    # Attempt to clear faults and put each robot back on the roadmap
+    # Attempt to clear faults and put each robot back on the roadmap if the user says its okay
     user_in = input('\nFault detected. Would you like to clear and home the robots? (y/n): ')
     if (user_in == 'y') or (user_in == 'Y'):
         print('\nAttempting fault recovery...')

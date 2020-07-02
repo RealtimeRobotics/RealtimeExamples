@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from PythonCommander import PythonCommander
+from lib.PythonCommander import PythonCommander
 import sys
 import time
 
@@ -15,9 +15,10 @@ def startup_sequence(cmdr,project_info,group):
         group (string): Group being controlled
     
     Returns:
-        startup_responses: A dictionary with keys: InitGroupResponses and BeginOperationResponse and the values are the response codes
+        startup_responses: A dictionary with response codes from all InitGroup calls and the BeginOperationMode call.
+                           Of the form {'InitGroupResponses':[int],'BeginOperationResponse':int}
     '''
-    startup_responses = {'InitGroupResponses':[],'BeginOperationResponse':[]}
+    startup_responses = {'InitGroupResponses':[],'BeginOperationResponse':None}
     init_responses = []
     for project_name,info in project_info.items():
         workstate = info['workstates'][0]
@@ -28,7 +29,7 @@ def startup_sequence(cmdr,project_info,group):
     # If all InitGroup calls returned 0, begin operation mode
     if sum(init_responses) == 0:
         begin_resp = cmdr.BeginOperation()
-        startup_responses['BeginOperationMode'] = begin_resp
+        startup_responses['BeginOperationResponse'] = int(begin_resp)
     else:
         print('Could not initialize all projects!')
     

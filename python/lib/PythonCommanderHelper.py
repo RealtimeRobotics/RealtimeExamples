@@ -5,7 +5,7 @@ import requests
 class ApiError(Exception):
     """An API Error Exception"""
     def __init__(self, status):
-        self.status = statu
+        self.status = status
     def __str__(self):
         return "APIError: status={}".format(self.status)
 
@@ -107,7 +107,7 @@ class PythonCommanderHelper(object):
             group_name (str): name of the group to be loaded in the Control Panel    
         '''
         extension,place_holer = self.load_group.split(':')
-        extension = extension + group_name
+        extension = extension + group_name + '/'
         self.send_put_request(extension)
     
     def put_unload_group(self,group_name):
@@ -118,7 +118,7 @@ class PythonCommanderHelper(object):
             group_name (str): name of the group to be unloaded from the Control Panel           
         '''
         extension,place_holer = self.unload_group.split(':')
-        extension = extension + group_name
+        extension = extension + group_name + '/'
         self.send_put_request(extension)
 
     def get_project_info(self,projects):
