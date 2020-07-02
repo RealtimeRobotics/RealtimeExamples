@@ -32,6 +32,8 @@ pip3 install requests
     Response Code: 0, Data: CONFIG
 ```
 ## Common Operations
+The following example is intended for release 1.2.0
+
 1. Open the RTR Control panel and load the provided project `CommonOperationsExample.zip'
 2. Create a Deconfliction Group called `CommonOperationsExample` and add the project to it
 3. Load the group and verify the voxel region
