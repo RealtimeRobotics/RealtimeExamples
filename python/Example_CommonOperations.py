@@ -14,7 +14,7 @@ def main():
     ### If ip address is passed, use it
     if len(sys.argv) != 1:
         ip_addr = str(sys.argv[1])
-        print("Setting ip address of Realtime Controller to: %s"%(ip_addr))
+        print(f'Setting ip address of Realtime Controller to: {ip_addr}')
     else: # Default IP address
         ip_addr = "127.0.0.1"
 

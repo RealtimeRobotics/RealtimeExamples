@@ -54,7 +54,8 @@ def shutdown(cmdr,group,unload=True):
 
 def put_on_roadmap(cmdr,project_info,group,hub='home'):
     '''
-    This function puts all robots back on the roadmap
+    This function attempts to put all robots back on the roadmap.
+    NOTE: In a multi robot scenario one robot may be blocked by the other. If the blocked robot is moved first, the offroad_to_hub call may fail.
 
     Parameters:
         cmdr (object): Instance of the PythonCommander
@@ -67,14 +68,14 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
     '''
     code, data = cmdr.GetMode()
     if data != 'OPERATION':
-        print('Controller not in operation mode. Calling startup_sequence()')
+        print('Put controller in operation mode!')
         return
 
     move_res = []
     for project_name,info in project_info.items():
         workstate = info['workstates'][0]
         cmdr.InitGroup(workstate,group_name = group,project_name=project_name)
-        hub_res, hub_seq = cmdr.OffroadToHub(workstate, hub, "low", 120.0, True, project_name)
+        hub_res, hub_seq = cmdr.OffroadToHub(workstate, hub, "low", 240.0, True, project_name)
         move_res.append(cmdr.WaitForMove(hub_seq))
 
     return move_res
@@ -82,13 +83,14 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
 
 def attempt_fault_recovery(cmdr,project_info,group,hub='home'):
     '''
-    This function clears faults on the controller and puts all robots back on the roadmap
+    This function clears faults on the controller and puts all robots back on the roadmap.
+    It is assumed that all projects in the group have a hub named 'home' or that all projects have a hub with the same name.
 
     Parameters:
         cmdr (object): Instance of the PythonCommander
         project_info (nested dict): Nested dict returned by PythonCommanderHelper's get_project_info() method
         group (string): Group being controlled
-        hub (string): Hub to move the robots to. Default is 'home'
+        hub (string): Hub name to move the all robots to. Default is 'home'
     '''
 
     # Clear faults on the RTR Controller

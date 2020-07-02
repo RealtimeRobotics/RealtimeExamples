@@ -7,7 +7,8 @@ class ApiError(Exception):
     def __init__(self, status):
         self.status = status
     def __str__(self):
-        return "APIError: status={}".format(self.status)
+        # return "APIError: status={}".format(self.status)
+        return f'APIError: status={self.status}'
 
 class PythonCommanderHelper(object):
     get_state = '/api/appliance/state/'
@@ -33,13 +34,14 @@ class PythonCommanderHelper(object):
         Returns:
             resp.json: The REST API's response in JSON form
         '''
-        url = 'http://%s%s'%(self.ip_adr,extension)
+        # url = 'http://%s%s'%(self.ip_adr,extension)
+        url = f'http://{self.ip_adr}{extension}'
         resp = requests.get(url)
-        print('\n[INFO] Sent Get request to %s'%(url))
+        print(f'\n[INFO] Sent Get request to {url}')
 
         if resp.status_code != 200:
             # This means something went wrong.
-            raise ApiError('GET {} {}'.format(url,resp.status_code))
+            raise ApiError(f'GET {url} {resp.status_code}')
         
         return resp.json()
 
@@ -50,13 +52,14 @@ class PythonCommanderHelper(object):
         Parameters:
             extension (str): the suffix, after http://<ip_address>, of the URL
         '''
-        url = 'http://%s%s'%(self.ip_adr,extension)
+        # url = 'http://%s%s'%(self.ip_adr,extension)
+        url = f'http://{self.ip_adr}{extension}'
         resp = requests.put(url)
-        print('\n[INFO] Sent Put request to %s'%(url))
+        print(f'\n[INFO] Sent Put request to {url}')
 
         if resp.status_code != 200:
             # This means something went wrong.
-            raise ApiError('PUT {} {}'.format(url,resp.status_code))
+            raise ApiError(f'PUT {url} {resp.status_code}')
 
     def get_control_panel_state(self):
         '''
@@ -79,7 +82,6 @@ class PythonCommanderHelper(object):
             group_info (nested dict): dictionary of the form {'group name': {'loaded': bool, 'projects': [str]}}
         '''
         groups = self.send_get_request(self.groups)
-        # print(groups)
         group_info = {}
         for group in groups:
             group_name = group['name']
