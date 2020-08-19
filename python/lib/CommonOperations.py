@@ -74,7 +74,6 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
     move_res = []
     for project_name,info in project_info.items():
         workstate = info['workstates'][0]
-        cmdr.InitGroup(workstate,group_name = group,project_name=project_name)
         hub_res, hub_seq = cmdr.OffroadToHub(workstate, hub, "low", 240.0, True, project_name)
         move_res.append(cmdr.WaitForMove(hub_seq))
 

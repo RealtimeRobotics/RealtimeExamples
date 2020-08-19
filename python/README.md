@@ -40,6 +40,9 @@ The following example is intended for release 1.2.0
 4. Run `Example_CommonOperations.py` with no arguments since this example is intended for simulation
 5. You should see the output
 ```
+Sending: GetMode
+GetMode,0,CONFIG
+
 [INFO] Sent Get request to http://127.0.0.1/api/groups/
 [INFO] Sent Get request to http://127.0.0.1/api/projects/CommonOperationsExample/
 
@@ -52,20 +55,16 @@ BeginOperationMode,0,OPERATION
 Putting robots on roadmap...
 Sending: GetMode
 GetMode,0,OPERATION
-Sending: InitGroup,CommonOperationsExample,CommonOperationsExample,default_state
-InitGroup,2004
-Sending: OffroadToHub,CommonOperationsExample,default_state,home,low,120.0,True
-OffroadToHub,0,1
-MoveResult,0,CommonOperationsExample,1
+Sending: OffroadToHub,CommonOperationsExample,default_state,home,low,240.0,True
+OffroadToHub,0,4
+MoveResult,0,CommonOperationsExample,4
 
-Simulating a fault...
-[INFO] Sent Put request to http://127.0.0.1/api/appliance/mode/config/
-[INFO] Sent Get request to http://127.0.0.1/api/appliance/state/
-[INFO] Sent Put request to http://127.0.0.1/api/projects/CommonOperationsExample/hubs/front_right
-
-Fault detected. Would you like to clear and home the robots? (y/n): y
+Would you like to test fault recovery? (y/n): y
+Press and release the e-stop, then hit Enter...
 
 Attempting fault recovery...
+Sending: GetMode
+GetMode,0,FAULT
 Sending: ClearFaults
 ClearFaults,0
 Sending: InitGroup,CommonOperationsExample,CommonOperationsExample,default_state
@@ -74,11 +73,9 @@ Sending: BeginOperationMode
 BeginOperationMode,0,OPERATION
 Sending: GetMode
 GetMode,0,OPERATION
-Sending: InitGroup,CommonOperationsExample,CommonOperationsExample,default_state
-InitGroup,2004
-Sending: OffroadToHub,CommonOperationsExample,default_state,home,low,120.0,True
-OffroadToHub,0,2
-MoveResult,0,CommonOperationsExample,2
+Sending: OffroadToHub,CommonOperationsExample,default_state,home,low,240.0,True
+OffroadToHub,0,5
+MoveResult,0,CommonOperationsExample,5
 ```
 
 ## Next Steps
