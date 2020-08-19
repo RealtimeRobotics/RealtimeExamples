@@ -53,6 +53,7 @@ def main():
 
     cmn_ops.put_on_roadmap(cmdr,project_info,group,hub='home')
 
+    # Clear robot faults programatically, and then put each robot back on the roadmap
     user_in = input('\nWould you like to test fault recovery? (y/n): ')
     if (user_in == 'y') or (user_in == 'Y'):
         user_in = input('\nPress and release the e-stop, then hit Enter...')
