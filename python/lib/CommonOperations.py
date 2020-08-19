@@ -92,7 +92,11 @@ def attempt_fault_recovery(cmdr,project_info,group,hub='home'):
         group (string): Group being controlled
         hub (string): Hub name to move the all robots to. Default is 'home'
     '''
-
+    code, data = cmdr.GetMode()
+    if data != 'FAULT':
+        print('Controller is not in Fault mode!')
+        return
+    
     # Clear faults on the RTR Controller
     cmdr.ClearFaults()
 
