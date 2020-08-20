@@ -3,3 +3,4 @@
 *.~u
 *.~u
 *.pyc
+__pycache__/

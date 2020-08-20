@@ -3,12 +3,7 @@
 from lib.PythonCommander import PythonCommander
 from lib.PythonCommanderHelper import PythonCommanderHelper
 import lib.CommonOperations as cmn_ops 
-import time, random, sys, threading
-
-from rtr_control_ros.srv import SetSimulatedError
-from rtr_control_ros.srv import SetSimulatedErrorRequest
-
-import rospy
+import time, random, sys
 
 def main():
     ### If ip address is passed, use it
@@ -23,17 +18,22 @@ def main():
     cmdr = PythonCommander(ip_addr, 9999) #TODO: pass IP as argument.
     cmdr.Reconnect()
 
-    # Commander helper that communicates with the Co
+    code, data = cmdr.GetMode()
+    if data == 'FAULT':
+        print('Clear faults first!')
+        return
+    
+    # Commander helper that communicates with the controller using a REST api
     helper = PythonCommanderHelper(ip_addr)
 
-    ### Enter Control Panel information here
-    # group name
+    ### Ensure that the group has been named correctly, and is currently loaded in the control panel
     group = 'CommonOperationsExample'
+    group_info = helper.get_group_info()
+    assert(group in list(group_info.keys())),"CommonOperationsExample is not a group name found on the Control Panel"
+    assert(group_info[group]['loaded']==True),"CommonOperationsExample Group is not loaded!"
 
     # Nested dictionary that contains all projects information of the form:
     # {project name: {workstates: [str], hubs: [str]}
-    group_info = helper.get_group_info()
-
     project_info = helper.get_project_info(group_info[group]['projects'])
     project_names = group_info[group]['projects']
 
@@ -53,27 +53,14 @@ def main():
 
     cmn_ops.put_on_roadmap(cmdr,project_info,group,hub='home')
 
-    # Teleport the robot to a random hub and then simulate a fault using the ROS service
-    print('\nSimulating a fault...')
-    time.sleep(1.0)
-
-    helper.put_config_mode()
-    hubs = project_info[project_names[0]]['hubs']
-    helper.put_teleport_robot(project_names[0],hubs[random.randint(0,len(hubs)-1)])
-
-    srv_handle = rospy.ServiceProxy("/%s/set_simulated_error"%(project_names[0]), SetSimulatedError)
-    request = SetSimulatedErrorRequest()
-    request.simulated_error = True
-    srv_handle(request)
-
-    # Attempt to clear faults and put each robot back on the roadmap if the user says its okay
-    user_in = input('\nFault detected. Would you like to clear and home the robots? (y/n): ')
+    # Clear robot faults programatically, and then put each robot back on the roadmap
+    user_in = input('\nWould you like to test fault recovery? (y/n): ')
     if (user_in == 'y') or (user_in == 'Y'):
+        user_in = input('\nPress and release the e-stop, then hit Enter...')
         print('\nAttempting fault recovery...')
-        time.sleep(0.75)
         cmn_ops.attempt_fault_recovery(cmdr,project_info,group,hub='home')
     else:
-        print('Aborting. Leaving robot in fault state.')
+        print('Skipping fault recovery test.')
 
 if __name__=="__main__":
     main()

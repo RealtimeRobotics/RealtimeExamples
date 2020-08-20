@@ -18,6 +18,11 @@ def startup_sequence(cmdr,project_info,group):
         startup_responses: A dictionary with response codes from all InitGroup calls and the BeginOperationMode call.
                            Of the form {'InitGroupResponses':[int],'BeginOperationResponse':int}
     '''
+    code, data = cmdr.GetMode()
+    if data == 'OPERATION':
+        print('Controller already in operation mode!')
+        return
+    
     startup_responses = {'InitGroupResponses':[],'BeginOperationResponse':None}
     init_responses = []
     for project_name,info in project_info.items():
@@ -74,7 +79,6 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
     move_res = []
     for project_name,info in project_info.items():
         workstate = info['workstates'][0]
-        cmdr.InitGroup(workstate,group_name = group,project_name=project_name)
         hub_res, hub_seq = cmdr.OffroadToHub(workstate, hub, "low", 240.0, True, project_name)
         move_res.append(cmdr.WaitForMove(hub_seq))
 
@@ -92,7 +96,11 @@ def attempt_fault_recovery(cmdr,project_info,group,hub='home'):
         group (string): Group being controlled
         hub (string): Hub name to move the all robots to. Default is 'home'
     '''
-
+    code, data = cmdr.GetMode()
+    if data != 'FAULT':
+        print('Controller is not in Fault mode!')
+        return
+    
     # Clear faults on the RTR Controller
     cmdr.ClearFaults()
 
