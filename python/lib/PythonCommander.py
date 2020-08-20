@@ -360,6 +360,44 @@ class PythonCommander:
 
         return self.BAD_CODE if timed_out else self._GetCode(data)
 
+    def CheckForMoveResult(self, seq_num):
+        """
+        Checks if MoveResult is received
+        Parameters:
+            seq_num (uint): sequence number to who's delayed response to look for
+        Returns:
+            uint: return code, 0 means success, self.ARGUMENTS_INVALID if seq_num isn't found in dict of
+                            self._reserved_sockets, None if move is not finished yet, other codes returned for path planning errors
+        """
+        # If the seq_num specified doesn't exist, just return ARGUMENTS_INVALID
+        if seq_num not in self._reserved_sockets:
+            # print('Invalid Sequence Number: number not in reserved sockets')
+            return self.ARGUMENTS_INVALID
+
+        move_attempt_complete = False
+        # grab the socket from reserved list
+        socket = self._reserved_sockets[seq_num]
+        socket.settimeout(0)  # set the timeout
+        try:
+            data = socket.recv(
+                PythonCommander.MAX_BUFFER_SIZE)  # try to recv
+
+            # In python 3 strings need to be converted from bytes to unicode
+            data = data.decode('utf_8')
+            move_attempt_complete = True
+            print(data)
+
+        except Exception as e:
+            pass
+
+        finally:
+            socket.settimeout(None)  # reset the timeout
+            if move_attempt_complete:
+                del self._reserved_sockets[seq_num] # delete seq_num and socket from _reserved_sockets dictionary
+                self._ReturnSocket(socket)  # return the socket to the pool
+
+        return self._GetCode(data) if move_attempt_complete else None
+
     def SetInterruptBehavior(self, replan_attempts, timeout, project_name=None):
         """
         Sets the planning parameters. Must call Setup(...) first.
