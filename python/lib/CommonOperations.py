@@ -18,6 +18,11 @@ def startup_sequence(cmdr,project_info,group):
         startup_responses: A dictionary with response codes from all InitGroup calls and the BeginOperationMode call.
                            Of the form {'InitGroupResponses':[int],'BeginOperationResponse':int}
     '''
+    code, data = cmdr.GetMode()
+    if data == 'OPERATION':
+        print('Controller already in operation mode!')
+        return
+    
     startup_responses = {'InitGroupResponses':[],'BeginOperationResponse':None}
     init_responses = []
     for project_name,info in project_info.items():
