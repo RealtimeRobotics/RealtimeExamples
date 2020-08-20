@@ -1,6 +1,6 @@
 # Python Examples
  ## Setup
- 1. Install Python 3 and pip
+ 1. Install Python 3 and pip3
  2. To use the REST api to get data from the controller install: 
 ```
 pip3 install requests
