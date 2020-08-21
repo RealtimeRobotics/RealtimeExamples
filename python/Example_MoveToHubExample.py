@@ -28,7 +28,6 @@ def main():
 
     ### Ensure that the group has been named correctly, and is currently loaded in the control panel
     group = 'CommonOperationsExample'
-    # group = 'ExampleGroup'
     group_info = helper.get_group_info()
     assert(group in list(group_info.keys())),"CommonOperationsExample is not a group name found on the Control Panel"
     assert(group_info[group]['loaded']==True),"CommonOperationsExample Group is not loaded!"
@@ -64,7 +63,6 @@ def main():
                 res = cmdr.CheckForMoveResult(seq_ids[project_idx])
                 
             if res or first_loop:
-                # print(res)
                 project = list(project_info.keys())[project_idx]
                 hubs = project_info[project]['hubs']
                 workstate = project_info[project]['workstates'][0]

@@ -370,14 +370,14 @@ class PythonCommander:
                             self._reserved_sockets, None if move is not finished yet, other codes returned for path planning errors
         """
         # If the seq_num specified doesn't exist, just return ARGUMENTS_INVALID
-        if seq_num not in self._reserved_sockets:
+        if not (seq_num  in self._reserved_sockets):
             # print('Invalid Sequence Number: number not in reserved sockets')
             return self.ARGUMENTS_INVALID
 
         move_attempt_complete = False
         # grab the socket from reserved list
         socket = self._reserved_sockets[seq_num]
-        socket.settimeout(0)  # set the timeout
+        socket.settimeout(0.1)  # set the timeout
         try:
             data = socket.recv(
                 PythonCommander.MAX_BUFFER_SIZE)  # try to recv
@@ -393,7 +393,8 @@ class PythonCommander:
         finally:
             socket.settimeout(None)  # reset the timeout
             if move_attempt_complete:
-                del self._reserved_sockets[seq_num] # delete seq_num and socket from _reserved_sockets dictionary
+                # del self._reserved_sockets[seq_num] # delete seq_num and socket from _reserved_sockets dictionary
+                self._reserved_sockets.pop(seq_num)
                 self._ReturnSocket(socket)  # return the socket to the pool
 
         return self._GetCode(data) if move_attempt_complete else None
