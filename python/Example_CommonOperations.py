@@ -26,11 +26,18 @@ def main():
     # Commander helper that communicates with the controller using a REST api
     helper = PythonCommanderHelper(ip_addr)
 
-    ### Ensure that the group has been named correctly, and is currently loaded in the control panel
-    group = 'CommonOperationsExample'
+    ### Request the group info from the control panel and then determine which group is loaded
     group_info = helper.get_group_info()
-    assert(group in list(group_info.keys())),"CommonOperationsExample is not a group name found on the Control Panel"
-    assert(group_info[group]['loaded']==True),"CommonOperationsExample Group is not loaded!"
+    group = None
+    for group_name,info in group_info.items():
+        if info['loaded'] == True:
+            group = group_name
+            break
+    if group:
+        print(f'\n{group} is loaded.')
+    else:
+        print(f'\nNo group is loaded!')
+        return
 
     # Nested dictionary that contains all projects information of the form:
     # {project name: {workstates: [str], hubs: [str]}
