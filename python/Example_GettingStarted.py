@@ -107,7 +107,7 @@ class TaskPlanner():
         if project_idx == 0:
             pose = [x1, y, 0.05, 0.0,3.14,0.0]
         elif project_idx == 1:
-            pose = [x1, y, 0.05, 0.0,3.14,0.0]
+            pose = [x2, y, 0.05, 0.0,3.14,0.0]
 
         return pose
 
