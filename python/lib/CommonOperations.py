@@ -21,24 +21,30 @@ def startup_sequence(cmdr,project_info,group):
     code, data = cmdr.GetMode()
     if data == 'OPERATION':
         print('Controller already in operation mode!')
-        return
+        return 0
     
-    startup_responses = {'InitGroupResponses':[],'BeginOperationResponse':None}
+    # startup_responses = {'InitGroupResponses':[],'BeginOperationResponse':None}
     init_responses = []
     for project_name,info in project_info.items():
         workstate = info['workstates'][0]
         resp = cmdr.InitGroup(workstate,group_name = group,project_name=project_name)
         init_responses.append(int(resp))
-    startup_responses['InitGroupResponses'] = init_responses
+    # startup_responses['InitGroupResponses'] = init_responses
 
     # If all InitGroup calls returned 0, begin operation mode
     if sum(init_responses) == 0:
         begin_resp = cmdr.BeginOperation()
-        startup_responses['BeginOperationResponse'] = int(begin_resp)
+        # startup_responses['BeginOperationResponse'] = int(begin_resp)
     else:
         print('Could not initialize all projects!')
+        for resp in init_responses:
+            if resp != 0:
+                return resp
+    if begin_resp != 0:
+        print(f'Begin operation mode call failed with response: {begin_resp}')
+        return begin_resp
     
-    return startup_responses
+    return 0
 
 def shutdown(cmdr,group,unload=True):
     '''
@@ -79,8 +85,8 @@ def put_on_roadmap(cmdr,project_info,group,hub='home'):
     move_res = []
     for project_name,info in project_info.items():
         workstate = info['workstates'][0]
-        hub_res, hub_seq = cmdr.OffroadToHub(workstate, hub, "low", 240.0, True, project_name)
-        move_res.append(cmdr.WaitForMove(hub_seq))
+        hub_res, hub_seq = cmdr.OffroadToHub(workstate, hub, "low", 240.0, True, 0.1, project_name=project_name)
+        move_res.append(cmdr.WaitForMove(hub_seq,timeout=240.0))
 
     return move_res
     
