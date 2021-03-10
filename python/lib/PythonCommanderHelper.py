@@ -11,15 +11,15 @@ class ApiError(Exception):
         return f'APIError: status={self.status}'
 
 class PythonCommanderHelper(object):
-    get_state = '/api/appliance/state/'
-    groups = '/api/groups/'
-    installed_proj = '/api/projects/'
-    proj_details = '/api/projects/:project/'
-    load_group = '/api/groups/load/:group'
-    unload_group = '/api/groups/unload/:group'
-    config_mode = '/api/appliance/mode/config/'
-    clear_faults = '/api/appliance/clear_faults/'
-    teleport_robot = '/api/projects/:project/hubs/:hub/'
+    get_state = '/api/v1/appliance/state/'
+    groups = '/api/v1/groups/'
+    installed_proj = '/api/v1/projects/'
+    proj_details = '/api/v1/projects/:project/'
+    load_group = '/api/v1/groups/load/:group'
+    unload_group = '/api/v1/groups/unload/:group'
+    config_mode = '/api/v1/appliance/mode/config/'
+    clear_faults = '/api/v1/appliance/clear_faults/'
+    teleport_robot = '/api/v1/projects/:project/hubs/:hub/'
     
     def __init__(self,ip_adr):
         self.ip_adr = ip_adr
