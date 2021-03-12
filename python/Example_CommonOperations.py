@@ -9,9 +9,9 @@ def main():
     ### If ip address is passed, use it
     if len(sys.argv) != 1:
         ip_addr = str(sys.argv[1])
-        print(f'Setting ip address of Realtime Controller to: {ip_addr}')
     else: # Default IP address
         ip_addr = "127.0.0.1"
+    print(f'Setting ip address of Realtime Controller to: {ip_addr}')
 
     # Setup the PythonCommander which is responsible for sending commands to the 
     # RTR Controller that control the robot/s or simulation
@@ -45,7 +45,10 @@ def main():
     print('Startup sequence...')
     time.sleep(1.0)
 
-    cmn_ops.startup_sequence(cmdr,project_info,group)
+    resp = cmn_ops.startup_sequence(cmdr,project_info,group)
+    if resp != 0:
+        print(f'Startup sequence failed with error code: {resp}')
+        return
 
     # Put each robot on the roadmap
     print('\nPutting robots on roadmap...')

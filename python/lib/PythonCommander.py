@@ -438,7 +438,7 @@ class PythonCommander:
                   z, rx, ry, rz, move_type, speed, ignore_all_collisions]
         return self._Call(tokens, True)
 
-    def OffroadToHub(self, workspace, hub, opt, timeout, fallback_to_nominal, project_name=None):
+    def OffroadToHub(self, workspace, hub, opt, timeout, fallback_to_nominal, speed, project_name=None):
         """
         Sends a Blind Move command. Must call Setup(...) first.
         Moves robot from off roadmap to specified hub with static collision checking only.
@@ -455,7 +455,7 @@ class PythonCommander:
         project_name = self._project_name if (
             project_name is None) else project_name
         tokens = [self.OFFROAD_TO_HUB, project_name,
-                  workspace, hub, opt, timeout, fallback_to_nominal]
+                  workspace, hub, opt, timeout, fallback_to_nominal, speed]
         return self._Call(tokens, True)
 
     def AcquireControl(self, workspace, project_name=None):

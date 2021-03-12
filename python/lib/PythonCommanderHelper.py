@@ -7,7 +7,6 @@ class ApiError(Exception):
     def __init__(self, status):
         self.status = status
     def __str__(self):
-        # return "APIError: status={}".format(self.status)
         return f'APIError: status={self.status}'
 
 class PythonCommanderHelper(object):
@@ -34,7 +33,6 @@ class PythonCommanderHelper(object):
         Returns:
             resp.json: The REST API's response in JSON form
         '''
-        # url = 'http://%s%s'%(self.ip_adr,extension)
         url = f'http://{self.ip_adr}{extension}'
         resp = requests.get(url)
         print(f'\n[INFO] Sent Get request to {url}')
@@ -52,7 +50,6 @@ class PythonCommanderHelper(object):
         Parameters:
             extension (str): the suffix, after http://<ip_address>, of the URL
         '''
-        # url = 'http://%s%s'%(self.ip_adr,extension)
         url = f'http://{self.ip_adr}{extension}'
         resp = requests.put(url)
         print(f'\n[INFO] Sent Put request to {url}')
@@ -142,7 +139,7 @@ class PythonCommanderHelper(object):
             extension = extension + project + '/'
             resp = self.send_get_request(extension)
 
-            workstates = resp['roadmaps'] # Actually workstates. Misnamed on the Control panel side
+            workstates = resp['roadmaps'] # Actually workstates
             hubs = resp['hubs']
             project_info.update({project:{'workstates':workstates,'hubs':hubs}})
             
