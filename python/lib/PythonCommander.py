@@ -37,6 +37,8 @@ class PythonCommander:
     RELEASE_CONTROL = 'ReleaseControl'
     CHANGE_WORKSPACE = 'ChangeWorkState'
     GET_MODE = 'GetMode'
+    GET_JOINT_STATE = 'GetJointState'
+    GET_EE_POSE = 'GetEEPose'
 
     # Return Codes
     SUCCESS = 0
@@ -522,4 +524,57 @@ class PythonCommander:
         project_name = self._project_name if (
             project_name is None) else project_name
         tokens = [self.CHANGE_WORKSPACE, project_name, workspace]
+        return self._Call(tokens, False)
+
+    def GetJointState(self, project_name=None):
+        """
+        Sends a Get Joint State command. Must call Setup(...) first.
+        Command to get the joint positions of the specified project in radians.
+        The number of joints returned will vary based on the number of joints the robot has.
+        Parameters:
+            project_name (string): name of the robot project this should effect
+        Returns:
+            unsigned int: return code 0 means success
+            List[str]: A list of strings for each joint angle in radians
+        """
+        project_name = self._project_name if (
+            project_name is None) else project_name
+        tokens = [self.GET_JOINT_STATE, project_name]
+        return self._Call(tokens, False)
+
+    def GetEEPose(self, project_name=None, link_name=None, target_frame=None):
+        """
+        Sends a Get EE Pose command. Must call Setup(...) first.
+        Command to get the pose of a specific link of the robot in a user specified
+        frame. 
+        Note - If using in a multi project group where the URDF links don’t all have 
+        unique names, the link_name / target_frame is often preceded by the project 
+        name with a slash. ie "Project_Name/base_link" or "Project_Name/Tool0"
+        Parameters:
+            project_name (string): name of the robot project this should effect
+            link_name (string): an optional parameter that specifies the link in
+                                the kinematic chain to return the pose of. The
+                                ASCII command call uses the chain end as the 
+                                default.
+            target_frame (string):  an optional parameter that specifies the frame
+                                    of reference to the link name specified. The 
+                                    link name argument must be passed along with
+                                    the link name.
+        Returns:
+            unsigned int: return code 0 means success
+            List[str]:  a list of strings representing the pose of the link_name in 
+                        the frame of reference passed as target_frame 
+        
+        Raises: 
+            Exception:  If target_frame is passed but link_name is not.
+        """
+        if link_name is None and target_frame is not None:
+            raise Exception('Target frame argument requires link name to be specified.')
+        project_name = self._project_name if (
+            project_name is None) else project_name
+        tokens = [self.GET_EE_POSE, project_name]
+        if link_name is not None:
+            tokens.append(link_name)
+        if target_frame is not None:
+            tokens.append(target_frame)
         return self._Call(tokens, False)
